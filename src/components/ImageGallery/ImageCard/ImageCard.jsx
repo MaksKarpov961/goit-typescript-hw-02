@@ -1,7 +1,11 @@
-const ImageCard = ({ small }) => {
+const ImageCard = ({ small, regular, onImageClick }) => {
   return (
     <div>
-      <img src={small} alt="Image description" />
+      <img
+        onClick={() => onImageClick(regular)}
+        src={small}
+        alt="Image description"
+      />
     </div>
   );
 };

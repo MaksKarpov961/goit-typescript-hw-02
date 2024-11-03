@@ -6,17 +6,32 @@ import fetchImageWithUnsplash from "../fetchImageWithUnsplash";
 import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
 import Loader from "./Loader/Loader";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
+import ImageModal from "./ImageModal/ImageModal"; // Імпортуємо модальне вікно
 
 function App() {
   const [galleryItems, setGalleryItems] = useState([]);
-  const [page, setPage] = useState(1); // Додаємо стан для сторінки
-  const [query, setQuery] = useState(""); // Зберігаємо поточний запит
-
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadMore, setLoadMore] = useState(false);
 
-  // Функція для обробки пошуку
+  // Додаємо стани для модального вікна
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState("");
+
+  // Функція для відкриття модального вікна
+  const openModal = (imageUrl) => {
+    setModalImageUrl(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  // Функція для закриття модального вікна
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalImageUrl("");
+  };
+
   const handleSearch = async (newQuery) => {
     try {
       setQuery(newQuery);
@@ -24,14 +39,9 @@ function App() {
       setGalleryItems([]);
       setLoading(true);
       setErrorMessage("");
-
       const params = { page: 1, perPage: 15 };
       const data = await fetchImageWithUnsplash(newQuery, params);
-      if (page * 15 >= data.total) {
-        setLoadMore(false);
-      } else {
-        setLoadMore(true);
-      }
+      setLoadMore(page * 15 < data.total);
       setGalleryItems(data.results);
     } catch (error) {
       setErrorMessage(error.message || "Failed to fetch images");
@@ -46,15 +56,9 @@ function App() {
       setPage(nextPage);
       setLoading(true);
       setErrorMessage("");
-
       const params = { page: nextPage, perPage: 15 };
       const data = await fetchImageWithUnsplash(query, params);
-      if (page * 15 >= data.total) {
-        setLoadMore(false);
-      } else {
-        setLoadMore(true);
-      }
-
+      setLoadMore(page * 15 < data.total);
       setGalleryItems((prevItems) => [...prevItems, ...data.results]);
     } catch (error) {
       setErrorMessage(error.message || "Failed to fetch images");
@@ -67,9 +71,16 @@ function App() {
     <>
       <SearchBar onSubmit={handleSearch} />
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      {galleryItems.length > 0 && <ImageGallery galleryItems={galleryItems} />}
+      {galleryItems.length > 0 && (
+        <ImageGallery galleryItems={galleryItems} onImageClick={openModal} />
+      )}
       {loading && <Loader />}
       {loadMore && <LoadMoreBtn handleSearchMore={handleSearchMore} />}
+      <ImageModal
+        isOpen={isModalOpen}
+        imageUrl={modalImageUrl}
+        onClose={closeModal}
+      />
     </>
   );
 }
