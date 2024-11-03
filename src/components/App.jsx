@@ -1,55 +1,75 @@
 import { useState } from "react";
 import "./App.css";
 import SearchBar from "./SearchBar/SearchBar";
-import axios from "axios";
 import ImageGallery from "./ImageGallery/ImageGallery";
+import fetchImageWithUnsplash from "../fetchImageWithUnsplash";
+import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
+import Loader from "./Loader/Loader";
+import ErrorMessage from "./ErrorMessage/ErrorMessage";
 
 function App() {
   const [galleryItems, setGalleryItems] = useState([]);
-  const API_KEY = "91mqVKUVeCMeRC2Vc9DbVvq20xf8RQvhmztw0o5zA8c";
+  const [page, setPage] = useState(1); // Додаємо стан для сторінки
+  const [query, setQuery] = useState(""); // Зберігаємо поточний запит
 
-  // Функція для виконання запиту до Unsplash API
-  const fetchImageWithUnsplash = async (query, params) => {
-    const { page = 1, perPage = 10 } = params;
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loadMore, setLoadMore] = useState(false);
 
+  // Функція для обробки пошуку
+  const handleSearch = async (newQuery) => {
     try {
-      const response = await axios.get(
-        "https://api.unsplash.com/search/photos",
-        {
-          headers: {
-            Authorization: `Client-ID ${API_KEY}`,
-          },
-          params: {
-            query,
-            page,
-            per_page: perPage,
-          },
-        }
-      );
-      // Повертаємо результати
-      return response.data.results;
+      setQuery(newQuery);
+      setPage(1);
+      setGalleryItems([]);
+      setLoading(true);
+      setErrorMessage("");
+
+      const params = { page: 1, perPage: 15 };
+      const data = await fetchImageWithUnsplash(newQuery, params);
+      if (page * 15 >= data.total) {
+        setLoadMore(false);
+      } else {
+        setLoadMore(true);
+      }
+      setGalleryItems(data.results);
     } catch (error) {
-      console.error("Error fetching images from Unsplash:", error);
-      throw error;
+      setErrorMessage(error.message || "Failed to fetch images");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Функція для обробки пошуку
-  const handleSearch = async (query) => {
+  const handleSearchMore = async () => {
     try {
-      setGalleryItems([]); // Очищення попередніх результатів
-      const params = { page: 1, perPage: 10 }; // Параметри для запиту
+      const nextPage = page + 1;
+      setPage(nextPage);
+      setLoading(true);
+      setErrorMessage("");
+
+      const params = { page: nextPage, perPage: 15 };
       const data = await fetchImageWithUnsplash(query, params);
-      setGalleryItems(data); // Встановлення нових даних у стан
+      if (page * 15 >= data.total) {
+        setLoadMore(false);
+      } else {
+        setLoadMore(true);
+      }
+
+      setGalleryItems((prevItems) => [...prevItems, ...data.results]);
     } catch (error) {
-      console.log("Failed to fetch images:", error);
+      setErrorMessage(error.message || "Failed to fetch images");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <SearchBar onSubmit={handleSearch} />
-      <ImageGallery galleryItems={galleryItems} />
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      {galleryItems.length > 0 && <ImageGallery galleryItems={galleryItems} />}
+      {loading && <Loader />}
+      {loadMore && <LoadMoreBtn handleSearchMore={handleSearchMore} />}
     </>
   );
 }
