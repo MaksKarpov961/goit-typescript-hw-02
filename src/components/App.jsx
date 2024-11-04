@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import s from "./App.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
@@ -15,8 +15,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadMore, setLoadMore] = useState(false);
-
-  // Додаємо стани для модального вікна
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState("");
 
@@ -32,40 +30,44 @@ function App() {
     setModalImageUrl("");
   };
 
-  const handleSearch = async (newQuery) => {
-    try {
-      setQuery(newQuery);
-      setPage(1);
-      setGalleryItems([]);
-      setLoading(true);
-      setErrorMessage("");
-      const params = { page: 1, perPage: 15 };
-      const data = await fetchImageWithUnsplash(newQuery, params);
-      setLoadMore(page * 15 < data.total);
-      setGalleryItems(data.results);
-    } catch (error) {
-      setErrorMessage(error.message || "Failed to fetch images");
-    } finally {
-      setLoading(false);
-    }
+  // Функція, що оновлює запит при новому пошуку
+  const handleSearch = (newQuery) => {
+    setQuery(newQuery);
+    setPage(1); // Повертаємося до першої сторінки
+    setGalleryItems([]); // Очищаємо поточні елементи галереї
   };
 
-  const handleSearchMore = async () => {
-    try {
-      const nextPage = page + 1;
-      setPage(nextPage);
+  // Функція, що оновлює сторінку при натисканні "Load more"
+  const handleSearchMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  // Виконуємо запит при зміні query або page
+  useEffect(() => {
+    if (!query) return; // Якщо запит порожній, не виконуємо нічого
+
+    const fetchData = async () => {
       setLoading(true);
       setErrorMessage("");
-      const params = { page: nextPage, perPage: 15 };
-      const data = await fetchImageWithUnsplash(query, params);
-      setLoadMore(page * 15 < data.total);
-      setGalleryItems((prevItems) => [...prevItems, ...data.results]);
-    } catch (error) {
-      setErrorMessage(error.message || "Failed to fetch images");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      try {
+        const params = { page, perPage: 15 };
+        const data = await fetchImageWithUnsplash(query, params);
+
+        setLoadMore(page * 15 < data.total); // Визначаємо, чи є ще сторінки для завантаження
+
+        setGalleryItems((prevItems) =>
+          page === 1 ? data.results : [...prevItems, ...data.results]
+        );
+      } catch (error) {
+        setErrorMessage(error.message || "Failed to fetch images");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [query, page]);
 
   return (
     <>
