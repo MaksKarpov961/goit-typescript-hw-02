@@ -1,6 +1,7 @@
+import s from "./LoadMoreBtn.module.css";
 const LoadMoreBtn = ({ handleSearchMore }) => {
   return (
-    <button onClick={handleSearchMore} type="button">
+    <button className={s.LoadMoreBtn} onClick={handleSearchMore} type="button">
       LoadMore
     </button>
   );

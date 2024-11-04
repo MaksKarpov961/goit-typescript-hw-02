@@ -1,0 +1,19 @@
+.header {
+  background-color: rgb(44, 44, 156);
+  padding: 15px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.input {
+  outline: none;
+}
+
+.form_btn {
+  padding: 5px;
+  cursor: pointer;
+}

@@ -21,7 +21,7 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
       alignItems: "center",
       overflow: "hidden",
       position: "relative",
-      borderRadius: "10px", // Додаємо округлі кути
+      borderRadius: "15px", // Додаємо округлі кути
     },
   };
   return (

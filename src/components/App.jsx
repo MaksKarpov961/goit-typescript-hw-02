@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+import s from "./App.module.css";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import fetchImageWithUnsplash from "../fetchImageWithUnsplash";
@@ -71,11 +71,13 @@ function App() {
     <>
       <SearchBar onSubmit={handleSearch} />
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      {galleryItems.length > 0 && (
-        <ImageGallery galleryItems={galleryItems} onImageClick={openModal} />
-      )}
-      {loading && <Loader />}
-      {loadMore && <LoadMoreBtn handleSearchMore={handleSearchMore} />}
+      <div className={s.gallery_wrapper}>
+        {galleryItems.length > 0 && (
+          <ImageGallery galleryItems={galleryItems} onImageClick={openModal} />
+        )}
+        {loading && <Loader />}
+        {loadMore && <LoadMoreBtn handleSearchMore={handleSearchMore} />}
+      </div>
       <ImageModal
         isOpen={isModalOpen}
         imageUrl={modalImageUrl}
