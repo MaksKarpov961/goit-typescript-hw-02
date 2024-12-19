@@ -1,9 +1,9 @@
 import axios from "axios";
-import { UnsplashImage } from "./components/App/App.types";
+import { ParamsType, UnsplashImage } from "./components/App/App.types";
 
 const fetchImageWithUnsplash = async (
   query: string,
-  params: { page: number; perPage: 15 }
+  params: ParamsType
 ): Promise<UnsplashImage> => {
   const API_KEY = "91mqVKUVeCMeRC2Vc9DbVvq20xf8RQvhmztw0o5zA8c";
   const { page = 1, perPage = 15 } = params;

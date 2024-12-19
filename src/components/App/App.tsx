@@ -7,16 +7,17 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageModal from "../ImageModal/ImageModal";
+import { ParamsType, UnsplashResult } from "./App.types";
 
 function App() {
-  const [galleryItems, setGalleryItems] = useState([]);
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loadMore, setLoadMore] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImageUrl, setModalImageUrl] = useState("");
+  const [galleryItems, setGalleryItems] = useState<UnsplashResult[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalImageUrl, setModalImageUrl] = useState<string>("");
 
   // Функція для відкриття модального вікна
   const openModal = (imageUrl) => {
@@ -31,7 +32,7 @@ function App() {
   };
 
   // Функція, що оновлює запит при новому пошуку
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string): void => {
     setQuery(newQuery);
     setPage(1); // Повертаємося до першої сторінки
     setGalleryItems([]); // Очищаємо поточні елементи галереї
@@ -51,7 +52,7 @@ function App() {
       setErrorMessage("");
 
       try {
-        const params = { page, perPage: 15 };
+        const params: ParamsType = { page, perPage: 15 };
         const data = await fetchImageWithUnsplash(query, params);
 
         setLoadMore(page * 15 < data.total); // Визначаємо, чи є ще сторінки для завантаження

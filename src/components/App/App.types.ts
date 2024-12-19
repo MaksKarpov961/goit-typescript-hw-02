@@ -11,3 +11,5 @@ export type UnsplashImage = {
   total: number;
   total_pages: number;
 };
+
+export type ParamsType = { page: number; perPage: number };
