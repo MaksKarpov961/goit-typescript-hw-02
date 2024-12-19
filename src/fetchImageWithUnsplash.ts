@@ -9,19 +9,22 @@ const fetchImageWithUnsplash = async (
   const { page = 1, perPage = 15 } = params;
 
   try {
-    const response = await axios.get("https://api.unsplash.com/search/photos", {
-      headers: {
-        Authorization: `Client-ID ${API_KEY}`,
-      },
-      params: {
-        query,
-        page,
-        per_page: perPage,
-        orientation: "squarish",
-        content_filter: "high",
-      },
-    });
-    return response.data;
+    const { data } = await axios.get<UnsplashImage>(
+      "https://api.unsplash.com/search/photos",
+      {
+        headers: {
+          Authorization: `Client-ID ${API_KEY}`,
+        },
+        params: {
+          query,
+          page,
+          per_page: perPage,
+          orientation: "squarish",
+          content_filter: "high",
+        },
+      }
+    );
+    return data;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error fetching images from Unsplash:", error.message);
