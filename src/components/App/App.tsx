@@ -61,7 +61,11 @@ function App() {
           page === 1 ? data.results : [...prevItems, ...data.results]
         );
       } catch (error) {
-        setErrorMessage(error.message || "Failed to fetch images");
+        if (error instanceof Error) {
+          setErrorMessage(error.message || "Failed to fetch images");
+        } else {
+          setErrorMessage("Failed to fetch images");
+        }
       } finally {
         setLoading(false);
       }
