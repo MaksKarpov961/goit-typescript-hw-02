@@ -1,5 +1,12 @@
 import s from "./ImageCard.module.css";
-const ImageCard = ({ small, regular, onImageClick }) => {
+import { FC } from "react";
+interface ImageCardProps {
+  small: string;
+  regular: string;
+  onImageClick: (url: string) => void;
+}
+
+const ImageCard: FC<ImageCardProps> = ({ small, regular, onImageClick }) => {
   return (
     <div className={s.img_wrapper}>
       <img

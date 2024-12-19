@@ -7,7 +7,7 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageModal from "../ImageModal/ImageModal";
-import { ParamsType, UnsplashResult } from "./App.types";
+import { ParamsType, UnsplashImage, UnsplashResult } from "./App.types";
 
 function App() {
   const [galleryItems, setGalleryItems] = useState<UnsplashResult[]>([]);
@@ -20,13 +20,13 @@ function App() {
   const [modalImageUrl, setModalImageUrl] = useState<string>("");
 
   // Функція для відкриття модального вікна
-  const openModal = (imageUrl) => {
+  const openModal = (imageUrl: string): void => {
     setModalImageUrl(imageUrl);
     setIsModalOpen(true);
   };
 
   // Функція для закриття модального вікна
-  const closeModal = () => {
+  const closeModal = (): void => {
     setIsModalOpen(false);
     setModalImageUrl("");
   };
@@ -39,7 +39,7 @@ function App() {
   };
 
   // Функція, що оновлює сторінку при натисканні "Load more"
-  const handleSearchMore = () => {
+  const handleSearchMore = (): void => {
     setPage((prevPage) => prevPage + 1);
   };
 
@@ -57,7 +57,7 @@ function App() {
 
         setLoadMore(page * 15 < data.total); // Визначаємо, чи є ще сторінки для завантаження
 
-        setGalleryItems((prevItems) =>
+        setGalleryItems((prevItems: UnsplashResult[]) =>
           page === 1 ? data.results : [...prevItems, ...data.results]
         );
       } catch (error) {
