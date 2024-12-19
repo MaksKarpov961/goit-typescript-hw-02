@@ -1,6 +1,10 @@
-// Функція для виконання запиту до Unsplash API
 import axios from "axios";
-const fetchImageWithUnsplash = async (query, params) => {
+import { UnsplashImage } from "./components/App/App.types";
+
+const fetchImageWithUnsplash = async (
+  query: string,
+  params: { page: number; perPage: 15 }
+): Promise<UnsplashImage> => {
   const API_KEY = "91mqVKUVeCMeRC2Vc9DbVvq20xf8RQvhmztw0o5zA8c";
   const { page = 1, perPage = 15 } = params;
 
@@ -17,11 +21,15 @@ const fetchImageWithUnsplash = async (query, params) => {
         content_filter: "high",
       },
     });
-    // Повертаємо результати
     return response.data;
-  } catch (error) {
-    console.error("Error fetching images from Unsplash:", error);
-    throw error;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching images from Unsplash:", error.message);
+      throw error.message;
+    } else {
+      console.error("An unknown error occurred:", error);
+      throw error;
+    }
   }
 };
 

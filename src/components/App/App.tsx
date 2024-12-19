@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import s from "./App.module.css";
-import SearchBar from "./SearchBar/SearchBar";
-import ImageGallery from "./ImageGallery/ImageGallery";
-import fetchImageWithUnsplash from "../fetchImageWithUnsplash";
-import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
-import Loader from "./Loader/Loader";
-import ErrorMessage from "./ErrorMessage/ErrorMessage";
-import ImageModal from "./ImageModal/ImageModal"; // Імпортуємо модальне вікно
+import SearchBar from "../SearchBar/SearchBar";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import fetchImageWithUnsplash from "../../fetchImageWithUnsplash";
+import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import ImageModal from "../ImageModal/ImageModal";
 
 function App() {
   const [galleryItems, setGalleryItems] = useState([]);
