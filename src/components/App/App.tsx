@@ -60,7 +60,7 @@ function App() {
         setGalleryItems((prevItems: UnsplashResult[]) =>
           page === 1 ? data.results : [...prevItems, ...data.results]
         );
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage(error.message || "Failed to fetch images");
         } else {
